@@ -114,7 +114,9 @@ while(run)
                 end %if j==14
                 if j==1 %calculate q' using left wall
                     if i==1 || i==14
-                   
+                        qPrimeVals(i) = 0.5*k*(T_new(i,j+1)-T_new(i,j));
+                    else
+                        qPrimeVals(i) = k*(T_new(i,j+1)-T_new(i,j));
                     end
                 end
                 
@@ -131,7 +133,9 @@ while(run)
            flag = true;
        else
            flag = false;
-           qPrime = ;
+           for i=1:length(qPrimeVals)
+               qPrime = qPrime+qPrimeVals(i);
+           end
        end %if/else
        tripped = false; %reset tripped for next iteration
     end %while flag
