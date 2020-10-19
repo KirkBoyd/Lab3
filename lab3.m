@@ -17,6 +17,7 @@ flag = true; %flag which goes down when convergence criteria for every node is m
 run = true;%flag variable to keep the program running
 qPrime = 0;% storage variable for q'
 qPrimeVals = zeros(14,1); %storage matrix for qPrime
+nodeReq = false;
 
 %% FUNCTIONS %%
 
@@ -138,5 +139,57 @@ while(run)
        tripped = false; %reset tripped for next iteration
     end %while flag
     
+    %% POST PROCESS USER INTERFACE %%
+    fprintf('\t\tBase Temperature: \tTip Temperature:\n');
+    fprintf('y=4 \t');
+    fprintf('%4.4f', T_new(4,6));
+    fprintf('\t\t\t ');
+    fprintf('%4.4f', T_new(4,14));
+    fprintf('\ny=5 \t');
+    fprintf('%4.4f', T_new(5,6));
+    fprintf('\t\t\t ');
+    fprintf('%4.4f', T_new(5,14));
+    fprintf('\ny=6 \t');
+    fprintf('%4.4f', T_new(6,6));
+    fprintf('\t\t\t ');
+    fprintf('%4.4f', T_new(6,14));
     
+    fprintf('\n'); %add a space for clarity
+    fprintf('\ny=9 \t');
+    fprintf('%4.4f', T_new(9,6));
+    fprintf('\t\t\t ');
+    fprintf('%4.4f', T_new(9,14));
+    fprintf('\ny=10 \t');
+    fprintf('%4.4f', T_new(10,6));
+    fprintf('\t\t\t ');
+    fprintf('%4.4f', T_new(10,14));
+    fprintf('\ny=11 \t');
+    fprintf('%4.4f', T_new(11,6));
+    fprintf('\t\t\t ');
+    fprintf('%4.4f', T_new(11,14));
+    fprintf('\n');
+    answer1
+    fprintf('Would you like to see another node value? \n');
+    if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == y
+        nodeReq = true;
+        while nodeReq
+            xReq = input("Enter x value as shown in the diagram: ");
+            yReq = input("Enter y value as shown in the diagram: ");
+            fprintf("\n Requested node Temperature is: ");%ask which node
+            fprintf(T_new(yReq, xReq));
+            fprintf('\nWould you like to see another node value? \n');
+            if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == "y"
+                nodeReq = true;
+            else
+                nodeReq = false;
+            end
+        end
+    else
+        fprintf("Would you like to try another run using different values for k, h_0, or Convergence Criteria?\n");
+        if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == "y"
+            run = true;
+        else
+            run = false;
+        end
+    end
 end %while run
