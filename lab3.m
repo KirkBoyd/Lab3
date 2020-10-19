@@ -7,6 +7,10 @@ close all; %close all other previously opened figures and windows
 T_infinity = 20; %degrees Celsius
 guess = 7; %later add input command here
 deltaX = 1*10^-3;
+promptX = {'Enter x-value as shown on the diagram:'};
+promptY = {'Enter y-value as shown on the diagram:'};
+defaultInput = {'1'};
+dialogBoxDimensions = [1 40];
 
 %% VARIABLES %%
 count = 0; %number of iterations taken to meet convergence criteria
@@ -168,28 +172,36 @@ while(run)
     fprintf('\t\t\t ');
     fprintf('%4.4f', T_new(11,14));
     fprintf('\n');
-    answer1
-    fprintf('Would you like to see another node value? \n');
-    if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == y
-        nodeReq = true;
-        while nodeReq
-            xReq = input("Enter x value as shown in the diagram: ");
-            yReq = input("Enter y value as shown in the diagram: ");
-            fprintf("\n Requested node Temperature is: ");%ask which node
-            fprintf(T_new(yReq, xReq));
-            fprintf('\nWould you like to see another node value? \n');
-            if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == "y"
-                nodeReq = true;
-            else
-                nodeReq = false;
-            end
-        end
-    else
-        fprintf("Would you like to try another run using different values for k, h_0, or Convergence Criteria?\n");
-        if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == "y"
-            run = true;
-        else
-            run = false;
-        end
+    answer1 = questdlg('Would you like to see another node value?', 'Want More Info?', 'Yes', 'No', 'No');
+    switch answer1
+        case 'Yes'
+            xReq = str2num(cell2mat(inputdlg(promptX,'Please Input x-Value',dialogBoxDimensions,defaultInput)));
+            yReq = str2num(cell2mat(inputdlg(promptY,'Please Input y-Value',dialogBoxDimensions,defaultInput)));
+            fprintf("\n Requested node Temperature is: ");
+            fprintf('%4.4f', T_new(yReq,xReq));
+        case 'No'
+            nodeReq = false;
+    end
+     if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == y
+%         nodeReq = true;
+%         while nodeReq
+%             xReq = input("Enter x value as shown in the diagram: ");
+%             yReq = input("Enter y value as shown in the diagram: ");
+%             fprintf("\n Requested node Temperature is: ");%ask which node
+%             fprintf(T_new(str2num(yReq), str2num(xReq)));
+%             fprintf('\nWould you like to see another node value? \n');
+%             if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == "y"
+%                 nodeReq = true;
+%             else
+%                 nodeReq = false;
+%             end
+%         end
+%     else
+%         fprintf("Would you like to try another run using different values for k, h_0, or Convergence Criteria?\n");
+%         if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == "y"
+%             run = true;
+%         else
+%             run = false;
+%         end
     end
 end %while run
