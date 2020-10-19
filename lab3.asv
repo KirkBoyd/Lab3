@@ -19,7 +19,7 @@ qPrime = 0;% storage variable for q'
 qPrimeVals = zeros(14,1); %storage matrix for qPrime
 
 %% FUNCTIONS %%
-
+function yNprompt
 
 %% MATRIX SETUP %%
 T_old = zeros(14); %create new matrix with 14 rows and columns populated by the number 0
