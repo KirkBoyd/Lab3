@@ -39,18 +39,18 @@ end
 %% MAIN LOOP %%
 while(run)
     %Prompt User Input%
-    k = str2num(cell2mat(inputdlg('Enter value of k in W/mK','Please Input x-Value',dialogBoxDimensions,defaultInput)));
     %FOR DEBUG% k = 1;%to add input delete this part of the comment% input("Please input value of 'k' in Watts per meter*Kelvin: "); %store value of k om W/mK
-    h_0 = str2num(cell2mat(inputdlg('Enter value of h-0 in W/(K*m^2)','Please Input x-Value',dialogBoxDimensions,defaultInput)));
+    k = 1;%str2num(cell2mat(inputdlg('Enter value of k in W/mK','Please Input x-Value',dialogBoxDimensions,defaultInput)));
     %FOR DEBUG% h_0 = 1;%to add input delete this part of the comment% input("Please input value of 'h_0' in Watts per (Kelvin * Square Meters): ");%store value of h_0 in W/(K*m^2)
-    convCriteria = str2num(cell2mat(inputdlg('Enter value of desired Convection Criteria','Please Input x-Value',dialogBoxDimensions,defaultInput)));
+    h_0 = 1;%str2num(cell2mat(inputdlg('Enter value of h-0 in W/(K*m^2)','Please Input x-Value',dialogBoxDimensions,defaultInput)));
     %FOR DEBUG% convCriteria = 0.01;%to add input delete this part of the comment%input("Please input value of convergence criteria: "); %store value of convergence criteria in units of degreesC - degreesC
+    convCriteria = 0.001%str2num(cell2mat(inputdlg('Enter value of desired Convection Criteria','Please Input x-Value',dialogBoxDimensions,defaultInput)));
     for i=1:length(T_old) %%adds guess value for nodes to be populated
         T_old(i,:) = guess; 
     end %%for loop
     %% MAIN LOGIC %%
     for i=1:length(T_old) %add left wall boundary values
-        T_old(i,1) = 300+10*(13-i);%%add left wall values where T(0,y)=(300+10y)
+        T_old(i,1) = 300+10*(14-i);%%add left wall values where T(0,y)=(300+10y)
     end %%for loop
 
     T_new = T_old; %create second array to store new values
