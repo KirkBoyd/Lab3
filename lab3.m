@@ -5,7 +5,7 @@ close all; %close all other previously opened figures and windows
 
 %% CONSTANTS %%
 T_infinity = 20; %degrees Celsius
-guess = 7; %later add input command here
+guess = 300; %later add input command here
 deltaX = 1*10^-3;
 promptX = {'Enter x-value as shown on the diagram:'};
 promptY = {'Enter y-value as shown on the diagram:'};
@@ -44,7 +44,7 @@ while(run)
     %FOR DEBUG% h_0 = 1;%to add input delete this part of the comment% input("Please input value of 'h_0' in Watts per (Kelvin * Square Meters): ");%store value of h_0 in W/(K*m^2)
     h_0 = 1;%str2num(cell2mat(inputdlg('Enter value of h-0 in W/(K*m^2)','Please Input x-Value',dialogBoxDimensions,defaultInput)));
     %FOR DEBUG% convCriteria = 0.01;%to add input delete this part of the comment%input("Please input value of convergence criteria: "); %store value of convergence criteria in units of degreesC - degreesC
-    convCriteria = 0.001%str2num(cell2mat(inputdlg('Enter value of desired Convection Criteria','Please Input x-Value',dialogBoxDimensions,defaultInput)));
+    convCriteria = 0.0001%str2num(cell2mat(inputdlg('Enter value of desired Convection Criteria','Please Input x-Value',dialogBoxDimensions,defaultInput)));
     for i=1:length(T_old) %%adds guess value for nodes to be populated
         T_old(i,:) = guess; 
     end %%for loop
@@ -64,10 +64,10 @@ while(run)
                 %X=2 to x=5
                 if 1<j && j<6 %if x is between 1 and 6...
                     if i==1 % if it is a top node
-                        T_new(i,j) = (1/3)*(0.5*T_old(i,j-1) + 0.5*T_old(i,j+1) + T_old(i+1,j)); %eq. A
+                        T_new(i,j) = (1/2)*(0.5*T_old(i,j-1) + 0.5*T_old(i,j+1) + T_old(i+1,j)); %eq. A
                     end
                     if i==14 % if it is a bottom node
-                        T_new(i,j) = (1/3)*(0.5*T_old(i,j-1) + 0.5*T_old(i,j+1) + T_old(i-1,j)); %eq. B
+                        T_new(i,j) = (1/2)*(0.5*T_old(i,j-1) + 0.5*T_old(i,j+1) + T_old(i-1,j)); %eq. B
                     end
                     if 1<i && i<14 %if it is a central node
                         T_new(i,j) = (1/4)*(T_old(i,j-1) + T_old(i+1,j) + T_old(i,j-1) + T_old(i-1,j));%eq. C
@@ -78,41 +78,41 @@ while(run)
                         T_new(i,j) = (k/(2*k+h*deltaX))*(T_old(i,j-1) + 0.5*T_old(i+1,j) + 0.5*T_old(i-1,j) + ((h*deltaX)/k)*T_infinity); %eq D
                     end
                     if i==4 || i==9 %if top left fin corner
-                        T_new(i,j) = (1/(3+(h/k)))*(0.5*T_old(i-1,j) + T_old(i,j-1) + T_old(i+1,j) + 0.5*T_old(i,j+1) + (h/k)*T_infinity); %eq. I
+                        T_new(i,j) = (1/(3+((h*deltaX)/k)))*(0.5*T_old(i-1,j) + T_old(i,j-1) + T_old(i+1,j) + 0.5*T_old(i,j+1) + ((h*deltaX)/k)*T_infinity); %eq. I
                     end
                     if i==5 || i==10 %if fin base internal node
                         T_new(i,j) = (1/4)*(T_old(i,j-1) + T_old(i+1,j) + T_old(i,j-1) + T_old(i-1,j));%eq. C
                     end
                     if i==6 || i==11 %if bottom left fin corner
-                        T_new(i,j) = (1/(3+(h/k)))*(T_old(i-1,j) + T_old(i,j-1) + 0.5*T_old(i+1,j) + 0.5*T_old(i,j+1) + (h/k)*T_infinity);%eq. J
+                        T_new(i,j) = (1/(3+((h*deltaX)/k)))*(T_old(i-1,j) + T_old(i,j-1) + 0.5*T_old(i+1,j) + 0.5*T_old(i,j+1) + ((h*deltaX)/k)*T_infinity);%eq. J
                     end
                     if i==1 %if top corner node (y=1)
-                        T_new(i,j) = (1/(2*k+h))*(k*T_old(i,j-1) + k*T_old(i+1,j) + h*T_infinity);%eq. G
+                        T_new(i,j) = (1/(2*k+h*deltaX))*(k*T_old(i,j-1) + k*T_old(i+1,j) + h*deltaX*T_infinity);%eq. G
                     end
                     if i==14 %if bottom corner node (y=14)
-                        T_new(i,j) = (1/(2*k+h))*(k*T_old(i,j-1) + k*T_old(i-1,j) + h*T_infinity);%eq. H
+                        T_new(i,j) = (1/(2*k+h*deltaX))*(k*T_old(i,j-1) + k*T_old(i-1,j) + h*deltaX*T_infinity);%eq. H
                     end
                 end
                 if 6<j && j<14 %if x is between 6 and 14
                     if i==4 || i==9 %if top fin surface node
-                        T_new(i,j) = (1/(2*k+h))*((k/2)*T_old(i,j-1) + k*T_old(i+1,j) + (k/2)*T_old(i,j+1) + h*T_infinity);%eq. E
+                        T_new(i,j) = (1/(2*k+h*deltaX))*((k/2)*T_old(i,j-1) + k*T_old(i+1,j) + (k/2)*T_old(i,j+1) + h*deltaX*T_infinity);%eq. E
                     end %if i==4...
                     if i==5 || i==10 %if fin internal node
                         T_new(i,j) = (1/4)*(T_old(i,j-1) + T_old(i+1,j) + T_old(i,j-1) + T_old(i-1,j));%eq. C
                     end %if i==5
                     if i==6 || i==11 %if bottom fin surface node
-                        T_new(i,j) = (1/(2*k+h))*((k/2)*T_old(i,j-1) + k*T_old(i-1,j) + (k/2)*T_old(i,j+1) + h*T_infinity); %eq. F
+                        T_new(i,j) = (1/(2*k+h*deltaX))*((k/2)*T_old(i,j-1) + k*T_old(i-1,j) + (k/2)*T_old(i,j+1) + h*deltaX*T_infinity); %eq. F
                     end %if i==6
                 end %if 6<j...
                 if j==14 %if it is a far right node
                     if i==4 || i==9 %if fin top right corner
-                        T_new(i,j) = (1/(1+(h/k)))*(0.5*T_old(i,j-1) + 0.5*T_old(i+1,j) + (h/k)*T_infinity); %eq. K
+                        T_new(i,j) = (1/(1+((h*deltaX)/k)))*(0.5*T_old(i,j-1) + 0.5*T_old(i+1,j) + ((h*deltaX)/k)*T_infinity); %eq. K
                     end %if i==4...
                     if i==5 || i==10 %if fin right vertical
                         T_new(i,j) = (k/(2*k+h*deltaX))*(T_old(i,j-1) + 0.5*T_old(i+1,j) + 0.5*T_old(i-1,j) + ((h*deltaX)/k)*T_infinity); %eq D
                     end %if i==5
                     if i==6 || i==11 %if fin bottom right corner
-                        T_new(i,j) = (1/(1+(h/k)))*(0.5*T_old(i,j-1) + 0.5*T_old(i-1,j) + (h/k)*T_infinity); %eq. L
+                        T_new(i,j) = (1/(1+((h*deltaX)/k)))*(0.5*T_old(i,j-1) + 0.5*T_old(i-1,j) + ((h*deltaX)/k)*T_infinity); %eq. L
                     end %if i==6
                 end %if j==14
                 if j==1 %calculate q' using left wall
