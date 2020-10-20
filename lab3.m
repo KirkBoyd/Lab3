@@ -21,10 +21,7 @@ flag = true; %flag which goes down when convergence criteria for every node is m
 run = true;%flag variable to keep the program running
 qPrime = 0;% storage variable for q'
 qPrimeVals = zeros(14,1); %storage matrix for qPrime
-nodeReq = false;
-
-%% FUNCTIONS %%
-
+nodeReq = true;
 
 %% MATRIX SETUP %%
 T_old = zeros(14); %create new matrix with 14 rows and columns populated by the number 0
@@ -42,13 +39,16 @@ end
 %% MAIN LOOP %%
 while(run)
     %Prompt User Input%
-    k = 1;%to add input delete this part of the comment% input("Please input value of 'k' in Watts per meter*Kelvin: "); %store value of k om W/mK
-    h_0 = 1;%to add input delete this part of the comment% input("Please input value of 'h_0' in Watts per (Kelvin * Square Meters): ");%store value of h_0 in W/(K*m^2)
-    convCriteria = 0.01;%to add input delete this part of the comment%input("Please input value of convergence criteria: "); %store value of convergence criteria in units of degreesC - degreesC
+    k = str2num(cell2mat(inputdlg('Enter value of k in W/mK','Please Input x-Value',dialogBoxDimensions,defaultInput)));
+    %FOR DEBUG% k = 1;%to add input delete this part of the comment% input("Please input value of 'k' in Watts per meter*Kelvin: "); %store value of k om W/mK
+    h_0 = str2num(cell2mat(inputdlg('Enter value of h-0 in W/(K*m^2)','Please Input x-Value',dialogBoxDimensions,defaultInput)));
+    %FOR DEBUG% h_0 = 1;%to add input delete this part of the comment% input("Please input value of 'h_0' in Watts per (Kelvin * Square Meters): ");%store value of h_0 in W/(K*m^2)
+    convCriteria = str2num(cell2mat(inputdlg('Enter value of desired Convection Criteria','Please Input x-Value',dialogBoxDimensions,defaultInput)));
+    %FOR DEBUG% convCriteria = 0.01;%to add input delete this part of the comment%input("Please input value of convergence criteria: "); %store value of convergence criteria in units of degreesC - degreesC
     for i=1:length(T_old) %%adds guess value for nodes to be populated
         T_old(i,:) = guess; 
     end %%for loop
-    %% LEFT WALL (Y = 0)
+    %% MAIN LOGIC %%
     for i=1:length(T_old) %add left wall boundary values
         T_old(i,1) = 300+10*(13-i);%%add left wall values where T(0,y)=(300+10y)
     end %%for loop
@@ -143,7 +143,7 @@ while(run)
        tripped = false; %reset tripped for next iteration
     end %while flag
     
-    %% POST PROCESS USER INTERFACE %%
+    %% PRINT FINAL VALUES %%
     fprintf('\t\tBase Temperature: \tTip Temperature:\n');
     fprintf('y=4 \t');
     fprintf('%4.4f', T_new(4,6));
@@ -172,36 +172,32 @@ while(run)
     fprintf('\t\t\t ');
     fprintf('%4.4f', T_new(11,14));
     fprintf('\n');
-    answer1 = questdlg('Would you like to see another node value?', 'Want More Info?', 'Yes', 'No', 'No');
-    switch answer1
-        case 'Yes'
-            xReq = str2num(cell2mat(inputdlg(promptX,'Please Input x-Value',dialogBoxDimensions,defaultInput)));
-            yReq = str2num(cell2mat(inputdlg(promptY,'Please Input y-Value',dialogBoxDimensions,defaultInput)));
-            fprintf("\n Requested node Temperature is: ");
-            fprintf('%4.4f', T_new(yReq,xReq));
-        case 'No'
-            nodeReq = false;
+    
+    %PRINT q'%
+    
+    %PRINT NUMBER OF ITERATIONS%
+    fprintf('Number of Iterations: ');
+    fprintf('%5d', count);
+    %% POST PROCESS USER INTERFACE %%
+    while nodeReq
+        answer1 = questdlg('Would you like to see another node value?', 'Want More Info?', 'Yes', 'No', 'No');
+        switch answer1
+            case 'Yes'
+                xReq = str2num(cell2mat(inputdlg(promptX,'Please Input x-Value',dialogBoxDimensions,defaultInput)));
+                yReq = str2num(cell2mat(inputdlg(promptY,'Please Input y-Value',dialogBoxDimensions,defaultInput)));
+                fprintf("\nRequested node Temperature is: ");
+                fprintf('%4.4f', T_new(yReq,xReq));
+                fprintf('\n');
+                nodeReq = true;
+            case 'No'
+                nodeReq = false;
+        end
     end
-     if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == y
-%         nodeReq = true;
-%         while nodeReq
-%             xReq = input("Enter x value as shown in the diagram: ");
-%             yReq = input("Enter y value as shown in the diagram: ");
-%             fprintf("\n Requested node Temperature is: ");%ask which node
-%             fprintf(T_new(str2num(yReq), str2num(xReq)));
-%             fprintf('\nWould you like to see another node value? \n');
-%             if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == "y"
-%                 nodeReq = true;
-%             else
-%                 nodeReq = false;
-%             end
-%         end
-%     else
-%         fprintf("Would you like to try another run using different values for k, h_0, or Convergence Criteria?\n");
-%         if input("Type 'y' for YES, and any other key for NO, then press 'ENTER': ") == "y"
-%             run = true;
-%         else
-%             run = false;
-%         end
+    answer2 = questdlg('Would you like to try another run using different values for k, h_0, or Convergence Criteria?','Run Again?','Yes','No','No');
+    switch answer2
+        case 'Yes'
+            run = true;
+        case 'No'
+            run = false;
     end
 end %while run
