@@ -1,6 +1,0 @@
-answer = questdlg('Would you like a dessert?', 'Dessert Menu', 'Ice Cream', 'Cake', 'No, thank you', 'No, thank you');
-
-switch answer
-    case 'Ice Cream'
-        disp([answer ' coming right up.'])
-        desser
